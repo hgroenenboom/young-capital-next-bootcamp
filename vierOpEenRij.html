@@ -180,26 +180,26 @@
 
 
 
-            function VOERMaintainer(cells, collumns, rows) {
+            function VOERMaintainer(cells, dimensions) {
                 this.cells = cells;
-                this.rows = rows;
-                this.collumns = collumns;
+                this.dimensions = dimensions;
 
                 var that = this;
-                for(var i = 0; i < rows; i++) {
-                    for(var j = 0; j < collumns; j++) {
+                for(var i = 0; i < dimensions[1]; i++) {
+                    for(var j = 0; j < dimensions[0]; j++) {
                         cells[i][j].onclick = function(pos) {
-                            that.handleClickEvent(pos[0], pos[1]);
+                            that.handleClickEvent(pos);
                         }
                     }
                 }
 
-                this.handleClickEvent = function(col, row) {
-                    cells[col][row].drawStone();
+                this.handleClickEvent = function(pos) {
+                    cells[pos[0]][pos[1]].drawStone();
+                    // Should handle drawing on right position.
                 }
             }
 
-            VOERMaintainer(cells, DIMENSIONS[0], DIMENSIONS[1]);
+            VOERMaintainer(cells, DIMENSIONS);
 
         </script>
     </body>
