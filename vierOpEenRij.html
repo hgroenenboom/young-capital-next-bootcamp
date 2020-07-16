@@ -14,7 +14,7 @@
             width: 0px;                 /*placeholder*/ 
             padding-bottom: 0px;        /*placeholder*/
             margin: 1px;
-            background-color: green;
+            background-color: lightcyan;
             display: inline-block;
         }
 
@@ -23,6 +23,7 @@
             left: 7.5%;
             height: 7.5vw;
             position: relative;
+            background-color: grey;
         }
   </style>
     
@@ -45,26 +46,28 @@
         <script type="text/javascript">
 
             // set number of Rows and Collums
-            const numRows = 10;
-            const numCollumns = 15;
-            const numCells = numRows * numCollumns;
+            const DIMENSIONS = [10, 7];
+            const NUMCELLS = DIMENSIONS[0] * DIMENSIONS[1];
     
-            function Cell (htmldiv, row, collumn) {
+            function Cell (htmldiv, position) {
                 this.div = htmldiv;
-                this.row = row;
-                this.collumn = collumn;
+                this.position = position;
                 this.hasStone = false;
 
                 var that = this;
                 this.div.addEventListener("click", function(e) {
                     if(that.hasStone == false) {
-                        that.drawStone();
+                        if(that.onclick != null) {
+                            that.onclick(that.position);
+                            that.hasStone = true;
+                        }
                     }
                 });
+                this.onclick = null;
 
                 this.log = function() {
                     console.log("element", this.div);
-                    console.log("row:", this.row, " & col:", this.collumn);
+                    console.log("position: ", this.position);
                 }
 
                 this.drawStone = function() {
@@ -157,25 +160,46 @@
             
             // genereer Cellen en voeg deze toe aan de Cells array
             var voerContainer = document.getElementById("voer");
-            console.log(voerContainer);
-            for(var i = 0; i < numCells; i++) {
-                if(i % numRows == 0) {
+            var row = null;
+            for(var i = 0; i < NUMCELLS; i++) {
+                if(i % DIMENSIONS[0] == 0) {
                     cells[cells.length] = [];
+                    row = document.createElement("div");
+                    voerContainer.appendChild(row);
                 }
 
                 var newCell = document.createElement("div");
                 newCell.className = "cell";
-                const rCollumns = 95 / numCollumns;
+                const rCollumns = 90 / DIMENSIONS[0];
                 newCell.style.setProperty("width", rCollumns + "%");
                 newCell.style.setProperty("height", rCollumns + "vw");
-                voerContainer.appendChild(newCell);
+                row.appendChild(newCell);
 
-                cells[cells.length-1].push(new Cell(newCell, cells.length-1, i % numRows));
+                cells[cells.length-1].push(new Cell(newCell, [ cells.length-1, i % DIMENSIONS[0] ] ));
             }
 
-            function VOERMaintainer(cells, rows, collumns) {
 
+
+            function VOERMaintainer(cells, collumns, rows) {
+                this.cells = cells;
+                this.rows = rows;
+                this.collumns = collumns;
+
+                var that = this;
+                for(var i = 0; i < rows; i++) {
+                    for(var j = 0; j < collumns; j++) {
+                        cells[i][j].onclick = function(pos) {
+                            that.handleClickEvent(pos[0], pos[1]);
+                        }
+                    }
+                }
+
+                this.handleClickEvent = function(col, row) {
+                    cells[col][row].drawStone();
+                }
             }
+
+            VOERMaintainer(cells, DIMENSIONS[0], DIMENSIONS[1]);
 
         </script>
     </body>
