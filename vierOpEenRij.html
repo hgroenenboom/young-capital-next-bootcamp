@@ -1,0 +1,79 @@
+<html>
+    
+    <style>
+        .cell {
+            width: 1%;
+            padding-bottom: 1%;
+            margin: 5px;
+            background-color: black;
+            display: inline-block;
+        }
+  </style>
+    
+    <head>
+    </head>
+    
+    <body>
+        <div>
+            <h1>
+                Vier op een rij
+            </h1>
+            <p>
+                Een simpele vier op een rij applicatie
+            </p>
+
+            <div id="voer"> 
+            </div>
+        </div>
+        
+        <script type="text/javascript">
+
+            // set number of Rows and Collums
+            var numRows = 7;
+            var numCollumns = 6;
+            var numCells = numRows * numCollumns;
+    
+            function Cell (htmldiv, row, collumn) {
+                this.div = htmldiv;
+                this.row = row;
+                this.collumn = collumn;
+
+                this.log = function() {
+                    console.log("element", this.div);
+                    console.log("row:", this.row, " & col:", this.collumn);
+                }
+            };
+            
+            /*
+            function VOERMaintainer(cells, rows, collumns) {
+
+            }
+            */
+
+            var cells = [];
+
+            // genereer Cell style:
+            var cssRuleCode = document.all ? 'rules' : 'cssRules'; //account for IE and FF
+            var rule = document.styleSheets[0][cssRuleCode][0];
+            rule.styleMap.set("width", "12.5%");
+            rule.styleMap.set("padding-bottom", "12.5%");
+            
+            // genereer Cellen en voeg deze toe aan de Cells array
+            var voerContainer = document.getElementById("voer");
+            console.log(voerContainer);
+            for(var i = 0; i < numCells; i++) {
+                if(i % numRows == 0) {
+                    cells[cells.length] = [];
+                }
+
+                var newCell = document.createElement("div");
+                newCell.className = "cell";
+                voerContainer.appendChild(newCell);
+
+                cells[cells.length-1].push(new Cell(newCell, cells.length-1, i % numRows));
+            }
+
+        </script>
+    </body>
+    
+</html>
