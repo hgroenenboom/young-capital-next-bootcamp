@@ -25,7 +25,7 @@
             position: relative;
             background-color: grey;
         }
-  </style>
+    </style>
     
     <head>
     </head>
@@ -46,14 +46,14 @@
         <script type="text/javascript">
 
             // set number of Rows and Collums
-            const DIMENSIONS = [12, 7];
+            const DIMENSIONS = [6, 7];
             const NUMCELLS = DIMENSIONS[0] * DIMENSIONS[1];
     
             function Cell (htmldiv, position) {
                 this.div = htmldiv;
                 this.position = position;
                 this.hasStone = false;
-                this.ownedByPlayer = -1;
+                this.playerNumber = -1;
 
                 var that = this;
                 this.div.addEventListener("click", function(e) {
@@ -75,8 +75,8 @@
                 }
 
                 this.drawStone = function(playerNumber) {
-                    this.ownedByPlayer = playerNumber;
-                    const stoneColor = this.ownedByPlayer > 0 ? "red" : "blue"; 
+                    this.playerNumber = playerNumber;
+                    const stoneColor = this.playerNumber > 0 ? "red" : "blue"; 
 
                     /*<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
                     width="1280.000000pt" height="854.000000pt" viewBox="0 0 1280.000000 854.000000"
@@ -145,32 +145,14 @@
             };
 
             var cells = [];
-
-
-            /*  NIET FIREFOX COMPATIBLE:    CSSStyleRule.styleMap 
-            // genereer Cell style:
-            var cssRuleCode = document.all ? 'rules' : 'cssRules'; //account for IE and FF
-            const styleSheet = document.styleSheets[0][cssRuleCode];
-            const numRules = styleSheet.length;
-
-            for(var i = 0; i < numRules; i++) {
-                const rule = styleSheet[i];
-                console.log(rule);
-                if(rule.selectorText == ".cell") {
-                    const rCollumns = 95 / numCollumns;
-                    rule.styleMap.set("width", rCollumns + "%");
-                    rule.styleMap.set("height", rCollumns + "vw");
-                }
-            }
-            */ 
             
             // genereer Cellen en voeg deze toe aan de Cells array
             var voerContainer = document.getElementById("voer");
-            var row = null;
+            var rowDiv = null;
             for(var i = 0; i < NUMCELLS; i++) {
                 if(i % DIMENSIONS[0] == 0) {
                     cells[cells.length] = [];
-                    row = document.createElement("div");
+                    rowDiv = document.createElement("div");
                     voerContainer.appendChild(row);
                 }
 
@@ -179,7 +161,7 @@
                 const rCollumns = 90 / DIMENSIONS[0];
                 newCell.style.setProperty("width", rCollumns + "%");
                 newCell.style.setProperty("height", rCollumns + "vw");
-                row.appendChild(newCell);
+                rowDiv.appendChild(newCell);
 
                 cells[cells.length-1].push(new Cell(newCell, [ cells.length-1, i % DIMENSIONS[0] ] ));
             }
@@ -212,7 +194,10 @@
                 
                 this.player1Turn = true;
                 this.handleClickEvent = function(pos) {
-                    this.dropStone(pos, player1Turn);
+                    var droppedStone = this.dropStone(pos, player1Turn);
+                    if( this.checkForWin(droppedStone) ) {
+                        alert("You've won!");
+                    };
                     player1Turn = !player1Turn;
                 }
 
@@ -220,9 +205,48 @@
                     for(var i = this.dimensions[1]-1; i > -1 ; i--) {
                         if(!this.cells[pos[1]][i].hasDrawn()) {
                             this.cells[pos[1]][i].drawStone(playersTurn);
-                            break;
+                            return [ pos[1],i ];
                         }
                     }
+                }
+
+                this.checkForWin = function(pos) {
+                    const CONSC_VALS = 4;
+                    const stonePlayer = this.cells[pos[0]][pos[1]].playerNumber;
+
+                    this.isPosInGrid = function(position) {
+                        if(position[0] >= 0 && position[0] < this.dimensions[0] && position[1] >= 0 && position[1] < this.dimensions[1])
+                            return true;
+                        return false;
+                    }
+
+                    var increments = [ [1, 0], [0, 1], [1, 1], [1, -1] ];
+                    // loop through all possible directions for VierOpEenRij
+                    for(var directions = 0; directions < 4; directions++) {
+                        const incr = increments[directions];
+
+                        // loop through all Cells and count consecutive values
+                        var cons_count = 0;
+                        for(var i = -CONSC_VALS; i < CONSC_VALS+1; i++) {
+
+                            const newPos = [ Math.round( pos[0] + incr[0] * i ), Math.round( pos[1] + incr[1] * i ) ];
+                            // console.log(newPos, "is", this.isPosInGrid(newPos), "inside grid ", this.dimensions);        // Show ignored fields
+
+                            if( this.isPosInGrid(newPos) ) {
+                                // this.cells[newPos[0]][newPos[1]].div.style.backgroundColor = "#000";                     // Show checked fields
+                                if(this.cells[newPos[0]][newPos[1]].playerNumber == stonePlayer) {
+                                    cons_count++;
+                                    if(cons_count == CONSC_VALS) {
+                                        return true;
+                                    }
+                                } else {
+                                    cons_count = 0;
+                                }
+                            }
+                        }
+                    }
+
+                    return false;
                 }
             }
 
