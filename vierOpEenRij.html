@@ -184,10 +184,21 @@
                 this.cells = cells;
                 this.dimensions = dimensions;
 
+                // switch oriëntation of cells
+                var shiftedCells = [];
+                for(var i = 0; i < dimensions[0]; i++) {
+                    shiftedCells[i] = [];
+                    for(var j = 0; j < dimensions[1]; j++) {
+                        shiftedCells[i][j] = cells[j][i];
+                    }
+                }
+                this.cells = shiftedCells;
+
+                // register cell click events to handleclickevent
                 var that = this;
-                for(var i = 0; i < dimensions[1]; i++) {
-                    for(var j = 0; j < dimensions[0]; j++) {
-                        cells[i][j].onclick = function(pos) {
+                for(var i = 0; i < dimensions[0]; i++) {
+                    for(var j = 0; j < dimensions[1]; j++) {
+                        this.cells[i][j].onclick = function(pos) {
                             that.handleClickEvent(pos);
                         }
                     }
