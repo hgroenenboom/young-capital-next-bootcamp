@@ -34,10 +34,10 @@
         <div>            
             <div id="voer"> 
                 <h1>
-                    Vier op een rij
+                    X op een rij
                 </h1>
                 <p>
-                    Een simpele vier op een rij applicatie
+                    Een simpele X op een rij applicatie
                 </p>
 
             </div>
@@ -46,20 +46,20 @@
         <script type="text/javascript">
 
             // set number of Rows and Collums
-            const DIMENSIONS = [10, 7];
+            const DIMENSIONS = [12, 7];
             const NUMCELLS = DIMENSIONS[0] * DIMENSIONS[1];
     
             function Cell (htmldiv, position) {
                 this.div = htmldiv;
                 this.position = position;
                 this.hasStone = false;
+                this.ownedByPlayer = -1;
 
                 var that = this;
                 this.div.addEventListener("click", function(e) {
                     if(that.hasStone == false) {
                         if(that.onclick != null) {
                             that.onclick(that.position);
-                            that.hasStone = true;
                         }
                     }
                 });
@@ -70,7 +70,14 @@
                     console.log("position: ", this.position);
                 }
 
-                this.drawStone = function() {
+                this.hasDrawn = function(){
+                    return this.hasStone;
+                }
+
+                this.drawStone = function(playerNumber) {
+                    this.ownedByPlayer = playerNumber;
+                    const stoneColor = this.ownedByPlayer > 0 ? "red" : "blue"; 
+
                     /*<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
                     width="1280.000000pt" height="854.000000pt" viewBox="0 0 1280.000000 854.000000"
                     preserveAspectRatio="xMidYMid meet">
@@ -107,7 +114,7 @@
                     
                     var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
                     g.setAttribute("transform", "translate(0.000000,854.000000) scale(0.100000,-0.100000)");
-                    g.setAttribute("fill", "#000000");
+                    g.setAttribute("fill", stoneColor);
                     g.setAttribute("stroke", "none");
 
                     var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -156,7 +163,6 @@
                 }
             }
             */ 
-
             
             // genereer Cellen en voeg deze toe aan de Cells array
             var voerContainer = document.getElementById("voer");
@@ -186,9 +192,9 @@
 
                 // switch oriëntation of cells
                 var shiftedCells = [];
-                for(var i = 0; i < dimensions[0]; i++) {
+                for(var i = 0; i < this.dimensions[0]; i++) {
                     shiftedCells[i] = [];
-                    for(var j = 0; j < dimensions[1]; j++) {
+                    for(var j = 0; j < this.dimensions[1]; j++) {
                         shiftedCells[i][j] = cells[j][i];
                     }
                 }
@@ -196,17 +202,27 @@
 
                 // register cell click events to handleclickevent
                 var that = this;
-                for(var i = 0; i < dimensions[0]; i++) {
-                    for(var j = 0; j < dimensions[1]; j++) {
+                for(var i = 0; i < this.dimensions[0]; i++) {
+                    for(var j = 0; j < this.dimensions[1]; j++) {
                         this.cells[i][j].onclick = function(pos) {
                             that.handleClickEvent(pos);
                         }
                     }
                 }
-
+                
+                this.player1Turn = true;
                 this.handleClickEvent = function(pos) {
-                    cells[pos[0]][pos[1]].drawStone();
-                    // Should handle drawing on right position.
+                    this.dropStone(pos, player1Turn);
+                    player1Turn = !player1Turn;
+                }
+
+                this.dropStone = function(pos, playersTurn) {
+                    for(var i = this.dimensions[1]-1; i > -1 ; i--) {
+                        if(!this.cells[pos[1]][i].hasDrawn()) {
+                            this.cells[pos[1]][i].drawStone(playersTurn);
+                            break;
+                        }
+                    }
                 }
             }
 
