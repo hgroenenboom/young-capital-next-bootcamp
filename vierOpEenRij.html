@@ -11,11 +11,18 @@
         }
 
         .cell {
-            width: 1%;              /*placeholder*/ 
-            padding-bottom: 1%;     /*placeholder*/
+            width: 0px;                 /*placeholder*/ 
+            padding-bottom: 0px;        /*placeholder*/
             margin: 1px;
             background-color: green;
             display: inline-block;
+        }
+
+        #voer {
+            width: 85%;
+            left: 7.5%;
+            height: 7.5vw;
+            position: relative;
         }
   </style>
     
@@ -23,23 +30,23 @@
     </head>
     
     <body>
-        <div>
-            <h1>
-                Vier op een rij
-            </h1>
-            <p>
-                Een simpele vier op een rij applicatie
-            </p>
-
+        <div>            
             <div id="voer"> 
+                <h1>
+                    Vier op een rij
+                </h1>
+                <p>
+                    Een simpele vier op een rij applicatie
+                </p>
+
             </div>
         </div>
         
         <script type="text/javascript">
 
             // set number of Rows and Collums
-            const numRows = 6;
-            const numCollumns = 10;
+            const numRows = 10;
+            const numCollumns = 15;
             const numCells = numRows * numCollumns;
     
             function Cell (htmldiv, row, collumn) {
@@ -126,15 +133,11 @@
                     this.hasStone = true;
                 }
             };
-            
-            /*
-            function VOERMaintainer(cells, rows, collumns) {
-
-            }
-            */
 
             var cells = [];
 
+
+            /*  NIET FIREFOX COMPATIBLE:    CSSStyleRule.styleMap 
             // genereer Cell style:
             var cssRuleCode = document.all ? 'rules' : 'cssRules'; //account for IE and FF
             const styleSheet = document.styleSheets[0][cssRuleCode];
@@ -142,12 +145,14 @@
 
             for(var i = 0; i < numRules; i++) {
                 const rule = styleSheet[i];
+                console.log(rule);
                 if(rule.selectorText == ".cell") {
                     const rCollumns = 95 / numCollumns;
                     rule.styleMap.set("width", rCollumns + "%");
                     rule.styleMap.set("height", rCollumns + "vw");
                 }
             }
+            */ 
 
             
             // genereer Cellen en voeg deze toe aan de Cells array
@@ -160,9 +165,16 @@
 
                 var newCell = document.createElement("div");
                 newCell.className = "cell";
+                const rCollumns = 95 / numCollumns;
+                newCell.style.setProperty("width", rCollumns + "%");
+                newCell.style.setProperty("height", rCollumns + "vw");
                 voerContainer.appendChild(newCell);
 
                 cells[cells.length-1].push(new Cell(newCell, cells.length-1, i % numRows));
+            }
+
+            function VOERMaintainer(cells, rows, collumns) {
+
             }
 
         </script>
