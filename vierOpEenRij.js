@@ -176,23 +176,26 @@ function VOERGameHandler(cells, dimensions) {
         }
     }
     
-    this.player1Turn = true;
+    this.playerHasWon = false;
+    this.player1Turn = true;    
     this.handleClickEvent = function(pos) {
-        var droppedStone = this.dropStone(pos, this.player1Turn);
-        if( this.checkForWin(droppedStone) ) {
-            var playername = this.player1Turn ? document.getElementById("playerone").value : document.getElementById("playertwo").value;
-            document.getElementById("wintext").innerHTML = playername + " won!";
-            document.getElementById("submit").value = "P L A Y   A G A I N";
-            var that = this;
+        if(!this.playerHasWon) {
+            var droppedStone = this.dropStone(pos, this.player1Turn);
+            if( this.checkForWin(droppedStone) ) {
+                var playername = this.player1Turn ? document.getElementById("playerone").value : document.getElementById("playertwo").value;
+                document.getElementById("wintext").innerHTML = playername + " won!";
+                document.getElementById("submit").value = "P L A Y   A G A I N";
+                var that = this;
 
-            document.getElementById("winscreen").classList.add("won");
-            setTimeout(function() {
-                that.changeView(false);
-                document.getElementById("winscreen").classList.remove("won");
-            }, 1400);
+                document.getElementById("winscreen").classList.add("won");
+                setTimeout(function() {
+                    that.changeView(false);
+                    document.getElementById("winscreen").classList.remove("won");
+                }, 1400);
+            }
+            this.player1Turn = !this.player1Turn;
+            this.setWhosTurnText();
         }
-        this.player1Turn = !this.player1Turn;
-        this.setWhosTurnText();
     };
 
     this.dropStone = function(pos, playersTurn) {
@@ -205,6 +208,10 @@ function VOERGameHandler(cells, dimensions) {
     };
 
     this.checkForWin = function(pos) {
+        if(this.playerHasWon) {
+            return false;
+        }
+
         const CONSC_VALS = 4;
         const stonePlayer = this.cells[pos[0]][pos[1]].playerNumber;
 
@@ -231,6 +238,7 @@ function VOERGameHandler(cells, dimensions) {
                     if(this.cells[newPos[0]][newPos[1]].playerNumber == stonePlayer) {
                         cons_count++;
                         if(cons_count == CONSC_VALS) {
+                            this.playerHasWon = true;
                             return true;
                         }
                     } else {
@@ -269,7 +277,8 @@ function VOERGameHandler(cells, dimensions) {
         document.getElementById("voer-text").innerHTML = "it's " + playername + "'s turn!";
     }
 
-    this.clearCells = function() {
+    this.reset = function() {
+        this.playerHasWon = false;
         for(var i = 0; i < this.dimensions[0]; i++) {
             for(var j = 0; j < this.dimensions[1]; j++) {
                 this.cells[i][j].reset();
@@ -283,7 +292,7 @@ var gameHandler = null;
 
 function startGame() {
     // alert();
-    gameHandler.clearCells();
+    gameHandler.reset();
     gameHandler.changeView(true);
     window.onresize();
 };
