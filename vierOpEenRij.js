@@ -1,5 +1,3 @@
-
-
 // set number of Rows and Collums
 const DIMENSIONS = [7, 6];
 const NUMCELLS = DIMENSIONS[0] * DIMENSIONS[1];
@@ -143,6 +141,15 @@ function Cell (htmldiv, position) {
 
         this.div.appendChild(svg);
     };
+
+    this.reset = function() {
+        this.playerNumber = -1;
+        console.log(this.div);
+        
+        if(this.div.children.length > 0) {
+            this.div.children[0].remove();
+        }
+    }
 }
 
 function VOERGameHandler(cells, dimensions) {
@@ -173,9 +180,19 @@ function VOERGameHandler(cells, dimensions) {
     this.handleClickEvent = function(pos) {
         var droppedStone = this.dropStone(pos, this.player1Turn);
         if( this.checkForWin(droppedStone) ) {
-            alert("You've won!");
+            var playername = this.player1Turn ? document.getElementById("playerone").value : document.getElementById("playertwo").value;
+            document.getElementById("wintext").innerHTML = playername + " won!";
+            document.getElementById("submit").value = "P L A Y   A G A I N";
+            var that = this;
+
+            document.getElementById("winscreen").classList.add("won");
+            setTimeout(function() {
+                that.changeView(false);
+                document.getElementById("winscreen").classList.remove("won");
+            }, 1400);
         }
         this.player1Turn = !this.player1Turn;
+        this.setWhosTurnText();
     };
 
     this.dropStone = function(pos, playersTurn) {
@@ -225,10 +242,51 @@ function VOERGameHandler(cells, dimensions) {
 
         return false;
     };
+
+    this.changeView = function(showOrHideGame) {
+        var voerClasses = document.getElementById("voer").classList;
+        var menuClasses = document.getElementById("menu").classList;
+
+        if(showOrHideGame == true) {
+            this.setWhosTurnText();
+            voerClasses.remove("invisible");
+            voerClasses.add("fadein");
+            voerClasses.remove("fadeout");
+            menuClasses.add("fadeout");
+            menuClasses.remove("fadein");
+        } else {
+            this.setWhosTurnText();
+            voerClasses.add("fadeout");
+            voerClasses.remove("fadein");
+            menuClasses.remove("fadeout"); 
+            menuClasses.add("fadein"); 
+        }
+    }
+
+    this.setWhosTurnText = function() {
+        var playername = this.player1Turn ? document.getElementById("playerone").value : document.getElementById("playertwo").value;
+        console.log(document.getElementById("playerone"));
+        document.getElementById("voer-text").innerHTML = "it's " + playername + "'s turn!";
+    }
+
+    this.clearCells = function() {
+        for(var i = 0; i < this.dimensions[0]; i++) {
+            for(var j = 0; j < this.dimensions[1]; j++) {
+                this.cells[i][j].reset();
+            }
+        }
+    }
 }
 
 var cells = null;
 var gameHandler = null;
+
+function startGame() {
+    // alert();
+    gameHandler.clearCells();
+    gameHandler.changeView(true);
+    window.onresize();
+};
 
 window.onload = function() {
     cells = [];
@@ -259,16 +317,18 @@ window.onload = function() {
         newCell.style.setProperty("height", newCell.offsetWidth);
     }
 
-    gameHandler = VOERGameHandler(cells, DIMENSIONS);
+    gameHandler = new VOERGameHandler(cells, DIMENSIONS);
+    document.getElementById("submit").disabled= false;
 
     window.onresize();
 };
 
 window.onresize = function() {
     const newW = cells[0][0].div.offsetWidth;
+
     for(var i = 0; i < DIMENSIONS[0]; i++) {
         for(var j = 0; j < DIMENSIONS[1]; j++) {
-            var cell = cells[i][j].div;
+            var cell = cells[j][i].div;
             cell.style.height = newW + "px";
         }
     }
