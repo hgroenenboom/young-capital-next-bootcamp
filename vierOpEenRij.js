@@ -248,6 +248,7 @@ function VOERGameHandler(cells, dimensions) {
 
             this.player1Turn = !this.player1Turn;
             this.setWhosTurnText();
+            this.saveToCache();
         }
     };
 
@@ -255,7 +256,6 @@ function VOERGameHandler(cells, dimensions) {
         for(var i = this.dimensions[1]-1; i > -1 ; i--) {
             if(!this.cells[pos[1]][i].hasDrawn()) {
                 const stoneDroppedTopPosition = this.getCell(pos).div.offsetTop;
-                console.log(stoneDroppedTopPosition);
                 this.cells[pos[1]][i].drawCoin(playersTurn, stoneDroppedTopPosition);
 
                 // return dropped position in grid
@@ -322,6 +322,7 @@ function VOERGameHandler(cells, dimensions) {
         setTimeout(function() {
             that.changeView(false);
             document.getElementById("winscreen").classList.remove("won");
+            that.reset();
         }, 1400);
     }
 
@@ -357,11 +358,59 @@ function VOERGameHandler(cells, dimensions) {
                 this.cells[i][j].reset();
             }
         }
+        this.clearCache();
+    }
+
+    this.saveToCache = function() {
+        var states = [];
+        for(var i = 0; i < this.dimensions[0]; i++) {
+            for(var j = 0; j < this.dimensions[1]; j++) {
+                const stateIndex = i*this.dimensions[1] + j;
+                states[ stateIndex ] = this.cells[i][j].cellState;
+            }
+        }
+        localStorage.states = JSON.stringify(states);
+        localStorage.player1 = document.getElementById("playerone").value;
+        localStorage.player2 = document.getElementById("playertwo").value;
+        localStorage.playersTurn = JSON.stringify(this.player1Turn);
+    }
+    
+    this.clearCache = function() {
+        localStorage.states = null;
+        localStorage.player1 = null;
+        localStorage.player2 = null;
+        localStorage.playersTurn = null;
+    }
+    
+    this.loadFromCache = function() {
+        states = JSON.parse(localStorage.states);
+        console.log(states);
+        if(states != null) {
+            // load cell states
+            for(var i = 0; i < this.dimensions[0]; i++) {
+                for(var j = 0; j < this.dimensions[1]; j++) {
+                    const stateIndex = i*this.dimensions[1] + j;
+                    const loadedState = states[ stateIndex ];
+                    
+                    console.log("loaded state from cache for ", stateIndex, loadedState);
+                    this.cells[i][j].cellState = loadedState;
+                    if(loadedState != CELLSTATE.NONE) {
+                        this.cells[i][j].drawCoin(loadedState, this.cells[i][j].offsetTop);
+                    }
+                }
+            }
+            
+            document.getElementById("playerone").value = localStorage.player1;
+            document.getElementById("playertwo").value = localStorage.player2;
+            document.getElementById("submit").value = "R E S U M E";
+            if(localStorage.playersTurn != null) {
+                this.player1Turn = JSON.parse( localStorage.playersTurn );
+            }
+        } 
     }
 }
 
 function startGame() {
-    gameHandler.reset();
     gameHandler.changeView(true);
     window.onresize();
 };
@@ -407,6 +456,8 @@ window.onload = function() {
     this.cells = shiftedCells;
 
     gameHandler = new VOERGameHandler(cells, DIMENSIONS);
+    gameHandler.loadFromCache();
+    
     document.getElementById("submit").disabled= false;
 
     window.onresize();
