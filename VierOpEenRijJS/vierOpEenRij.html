@@ -69,13 +69,14 @@
             }
 
             svg {
-                top: 20%;
-                left: 20%;
-                width: 60%;
-                height: 60%;
+                top: 8%;
+                left: 8%;
+                width: 84%;
+                height: 84%;
                 display: block;
                 position: relative;
                 transition: top 0.4s;
+                filter: blur(0.3px) contrast(1.3) saturate(1.13) drop-shadow(0px 2px 0px rgba(0, 0, 0, 0.8));
             }
 
             label {
@@ -115,10 +116,11 @@
             .cell {
                 width: 0px;                 /*placeholder*/ 
                 padding-bottom: 0px;        /*placeholder*/
-                margin: 1px;
+                margin: 0px;
                 background-color: #92f0da;
                 display: inline-block;
                 border-radius: 50%;
+                filter: drop-shadow(-1px 6px 6px rgba(0, 0, 0, 0.5)) blur(0px) saturate(0.8);
             }
 
             .container {
@@ -127,6 +129,7 @@
                 left: 27%;
                 height: auto;
                 position: absolute;
+                padding: 30px;
             }
 
             .background {
@@ -153,7 +156,15 @@
                 font-size: 2.3vw;
                 background: linear-gradient(242deg, #22b79227, #2fffdc56, #3d81e1ad, #79b6ae);
                 background-size: 400% 400%;
-                -webkit-animation: Gradient 0.1s 14 linear;
+                -webkit-animation: Gradient 0.14s 14 linear;
+            }
+
+            #menu {
+                border: 5px;
+                border-radius: 10px;
+                border-style: solid;
+                border-color: rgba(50, 50, 50, 0.06);
+                background-color: rgba(50, 50, 50, 0.16);
             }
         </style>
     
@@ -184,6 +195,9 @@
             <div id="winscreen" class="winscreen"></div>
             <div id="voer" class="invisible container"> 
                 <p id="voer-text"></p>
+                <div id="voer-game">
+
+                </div>
             </div>
         </div>
         
