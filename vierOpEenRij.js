@@ -218,6 +218,12 @@ function Cell (htmldiv, position) {
 
 
 
+const WINDOWS = Object.freeze({
+    MENU:0,
+    GAME:1,
+    LEADER:2
+})
+
 function VOERGameHandler(cells, dimensions) {
     this.cells = cells;
     this.dimensions = dimensions;
@@ -310,6 +316,32 @@ function VOERGameHandler(cells, dimensions) {
         return false;
     };
 
+        
+    this.changeView = function(windowToChangeTo) {
+        var menuClasses = document.getElementById("menu").classList;
+        var voerClasses = document.getElementById("voer").classList;
+        var leaderClasses = document.getElementById("leaderboards").classList;
+        var all = [ menuClasses, voerClasses, leaderClasses ];
+        
+        if(windowToChangeTo == WINDOWS.LEADER) {
+            this.setLeaderBoards();
+        }
+
+        for(var i = 0; i < all.length; i++) {
+            if(i == windowToChangeTo) {
+                all[i].remove("fadeout");
+                all[i].add("fadein");
+                all[i].remove("invisible");
+            } else {
+                all[i].remove("fadein");
+                all[i].add("fadeout");
+
+            }
+        }
+
+        this.setWhosTurnText();
+    }
+
     this.showWinScreen = function() {
         // set new menu data
         var playername = this.player1Turn ? document.getElementById("playerone").value : document.getElementById("playertwo").value;
@@ -318,32 +350,23 @@ function VOERGameHandler(cells, dimensions) {
 
         // add winscreen class
         document.getElementById("winscreen").classList.add("won");
+
+        if(localStorage.oldGames == null) {
+            var oldGames = [];
+        } else {
+            var oldGames = JSON.parse(localStorage.oldGames);
+        }
+        const game = [ document.getElementById("playerone").value , document.getElementById("playertwo").value ];
+        oldGames.push(game);
+        localStorage.oldGames = JSON.stringify(oldGames);
+        console.log(localStorage.oldGames);
+
         var that = this;
         setTimeout(function() {
             that.changeView(false);
             document.getElementById("winscreen").classList.remove("won");
             that.reset();
         }, 1400);
-    }
-
-    this.changeView = function(showOrHideGame) {
-        var voerClasses = document.getElementById("voer").classList;
-        var menuClasses = document.getElementById("menu").classList;
-
-        if(showOrHideGame == true) {
-            this.setWhosTurnText();
-            voerClasses.remove("invisible");
-            voerClasses.add("fadein");
-            voerClasses.remove("fadeout");
-            menuClasses.add("fadeout");
-            menuClasses.remove("fadein");
-        } else {
-            this.setWhosTurnText();
-            voerClasses.add("fadeout");
-            voerClasses.remove("fadein");
-            menuClasses.remove("fadeout"); 
-            menuClasses.add("fadein"); 
-        }
     }
 
     this.setWhosTurnText = function() {
@@ -373,6 +396,7 @@ function VOERGameHandler(cells, dimensions) {
         localStorage.player1 = document.getElementById("playerone").value;
         localStorage.player2 = document.getElementById("playertwo").value;
         localStorage.playersTurn = JSON.stringify(this.player1Turn);
+        document.getElementById("submit").value = "R E S U M E";
     }
     
     this.clearCache = function() {
@@ -380,6 +404,7 @@ function VOERGameHandler(cells, dimensions) {
         localStorage.player1 = null;
         localStorage.player2 = null;
         localStorage.playersTurn = null;
+        document.getElementById("submit").value = "P L A Y    A G A I N";
     }
     
     this.loadFromCache = function() {
@@ -409,10 +434,23 @@ function VOERGameHandler(cells, dimensions) {
             }
         } 
     }
+
+    this.setLeaderBoards = function() {
+        const oldGames = JSON.parse( localStorage.oldGames );
+        if(oldGames != null) {
+            for(var i = 0; i < oldGames.length; i++) {
+                var div = document.createElement("div");
+                var p = document.createElement("p");
+                p.innerHTML = oldGames[i][0] + " - " + oldGames[i][1];
+                div.appendChild(p);
+                document.getElementById("boards").appendChild(div);
+            }
+        }
+    }
 }
 
 function startGame() {
-    gameHandler.changeView(true);
+    gameHandler.changeView(WINDOWS.GAME);
     window.onresize();
 };
 

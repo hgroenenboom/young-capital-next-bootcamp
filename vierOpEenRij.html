@@ -3,7 +3,7 @@
     
     <head>
         <style>
-            input[type=button] {
+            .button {
                 width: 50%;
                 height: 50px;
                 margin: 10px;
@@ -13,6 +13,18 @@
                 background-size: 800% 800%;
                 -webkit-animation: Gradient 4.3s infinite linear;
                 font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+            }
+
+            .onleft {
+                float: left;
+                display: inline-block;
+                width: 20%;
+            }
+
+            .onright {
+                float: right;
+                display: inline-block;
+                width: 20%;
             }
 
             @-webkit-keyframes Gradient {
@@ -159,12 +171,16 @@
                 -webkit-animation: Gradient 0.14s 14 linear;
             }
 
-            #menu {
+            .menu {
                 border: 5px;
                 border-radius: 10px;
                 border-style: solid;
                 border-color: rgba(50, 50, 50, 0.06);
                 background-color: rgba(50, 50, 50, 0.16);
+            }
+
+            .table {
+                display: flow-root;
             }
         </style>
     
@@ -176,7 +192,7 @@
             <div class="background" style="background-image: url(https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/123740332/original/60547d6091e5c71dfb5cf8e0841c7d3d77f89ae2/create-anime-background-style.jpg);">
             </div>            
 
-            <div id="menu" class="container">
+            <div id="menu" class="container menu">
                 <h1>
                     Vier Op Een Rij
                 </h1>
@@ -188,16 +204,31 @@
                     <input type="text" id="playerone" name="playerone" value="Cat1"><br><br>
                     <label for="playertwo">Player Two  </label>
                     <input type="text" id="playertwo" name="playertwo" value="Cat2"><br><br>
-                    <input id="submit" onclick="return startGame();" type="button" value="P L A Y" disabled>
+                    <input class="button" id="submit" onclick="return startGame();" type="button" value="P L A Y" disabled>
                 </form>
+                <br>
+                <br>
+                <br>
+                <input class="button" type="button" id="leaderboardsButton" value="LEADERBOARDS" onclick="gameHandler.changeView(WINDOWS.LEADER)">
             </div> 
 
             <div id="winscreen" class="winscreen"></div>
             <div id="voer" class="invisible container"> 
-                <p id="voer-text"></p>
+                <div class="table">
+                    <p class="onleft" id="voer-text"></p>
+                    <input class="button onright" type="button" value="B A C K" onclick="gameHandler.changeView(WINDOWS.MENU)">
+                </div>
                 <div id="voer-game">
 
                 </div>
+            </div>
+
+            <div id="leaderboards" class="invisible container menu">
+                <div class="table">
+                    <p class="onleft">Leaderboards</p>
+                    <input class="button onright" type="button" value="B A C K" onclick="gameHandler.changeView(WINDOWS.MENU)">
+                </div>
+                <div id="boards"></div>
             </div>
         </div>
         
