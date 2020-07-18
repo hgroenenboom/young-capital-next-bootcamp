@@ -383,8 +383,9 @@ function VOERGameHandler(cells, dimensions) {
     }
     
     this.loadFromCache = function() {
-        states = JSON.parse(localStorage.states);
-        console.log(states);
+        if(localStorage.states != null) {
+            var states = JSON.parse( localStorage.states );
+        }
         if(states != null) {
             // load cell states
             for(var i = 0; i < this.dimensions[0]; i++) {
