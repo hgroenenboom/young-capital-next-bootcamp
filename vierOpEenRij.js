@@ -233,27 +233,30 @@ const WINDOWS = Object.freeze({
     LEADER:2
 })
 
-function VOERGameHandler(cells, dimensions) {
-    this.cells = cells;
-    this.dimensions = dimensions;
+class VOERGameHandler {
+    constructor(cells, dimensions) {
+        this.cells = cells;
+        this.dimensions = dimensions;
 
-    // register cell click events to this.handleclickevent
-    var that = this;
-    for(var i = 0; i < this.dimensions[0]; i++) {
-        for(var j = 0; j < this.dimensions[1]; j++) {
-            this.cells[i][j].registerMouseClickedCallback( function(pos) {
-                that.handleClickEvent(pos);
-            });
+        // register cell click events to this.handleclickevent
+        var that = this;
+        for(var i = 0; i < this.dimensions[0]; i++) {
+            for(var j = 0; j < this.dimensions[1]; j++) {
+                this.cells[i][j].registerMouseClickedCallback( function(pos) {
+                    that.handleClickEvent(pos);
+                });
+            }
         }
+
+        this.playerHasWon = false;
+        this.player1Turn = true;    
     }
 
-    this.getCell = function(pos) {
+    getCell(pos) {
         return this.cells[pos[1]][pos[0]];
     }
     
-    this.playerHasWon = false;
-    this.player1Turn = true;    
-    this.handleClickEvent = function(pos) {
+    handleClickEvent(pos) {
         if(!this.playerHasWon) {
             var droppedStonePos = this.dropStone(pos, this.player1Turn);
 
@@ -267,7 +270,7 @@ function VOERGameHandler(cells, dimensions) {
         }
     };
 
-    this.dropStone = function(pos, playersTurn) {
+    dropStone(pos, playersTurn) {
         for(var i = this.dimensions[1]-1; i > -1 ; i--) {
             if(!this.cells[pos[1]][i].hasDrawn) {
                 const stoneDroppedTopPosition = this.getCell(pos).div.offsetTop;
@@ -279,7 +282,7 @@ function VOERGameHandler(cells, dimensions) {
         }
     };
 
-    this.checkForWin = function(pos) {
+    checkForWin(pos) {
         if(this.playerHasWon) {
             return false;
         }
@@ -326,7 +329,7 @@ function VOERGameHandler(cells, dimensions) {
     };
 
         
-    this.changeView = function(windowToChangeTo) {
+    changeView(windowToChangeTo) {
         var menuClasses = document.getElementById("menu").classList;
         var voerClasses = document.getElementById("voer").classList;
         var leaderClasses = document.getElementById("leaderboards").classList;
@@ -351,7 +354,7 @@ function VOERGameHandler(cells, dimensions) {
         this.setWhosTurnText();
     }
 
-    this.showWinScreen = function() {
+    showWinScreen() {
         // set new menu data
         var playername = this.player1Turn ? document.getElementById("playerone").value : document.getElementById("playertwo").value;
         document.getElementById("wintext").innerHTML = playername + " won!";
@@ -378,12 +381,12 @@ function VOERGameHandler(cells, dimensions) {
         }, 1400);
     }
 
-    this.setWhosTurnText = function() {
+    setWhosTurnText = function() {
         var playername = this.player1Turn ? document.getElementById("playerone").value : document.getElementById("playertwo").value;
         document.getElementById("voer-text").innerHTML = "it's " + playername + "'s turn!";
     }
 
-    this.reset = function() {
+    reset() {
         this.playerHasWon = false;
         for(var i = 0; i < this.dimensions[0]; i++) {
             for(var j = 0; j < this.dimensions[1]; j++) {
@@ -393,7 +396,7 @@ function VOERGameHandler(cells, dimensions) {
         this.clearCache();
     }
 
-    this.saveToCache = function() {
+    saveToCache() {
         var states = [];
         for(var i = 0; i < this.dimensions[0]; i++) {
             for(var j = 0; j < this.dimensions[1]; j++) {
@@ -408,15 +411,7 @@ function VOERGameHandler(cells, dimensions) {
         document.getElementById("submit").value = "R E S U M E";
     }
     
-    this.clearCache = function() {
-        localStorage.states = null;
-        localStorage.player1 = null;
-        localStorage.player2 = null;
-        localStorage.playersTurn = null;
-        document.getElementById("submit").value = "P L A Y    A G A I N";
-    }
-    
-    this.loadFromCache = function() {
+    loadFromCache() {
         if(localStorage.states != null) {
             var states = JSON.parse( localStorage.states );
         }
@@ -442,28 +437,49 @@ function VOERGameHandler(cells, dimensions) {
             }
         } 
     }
+    
+    clearCache() {
+        localStorage.states = null;
+        localStorage.player1 = null;
+        localStorage.player2 = null;
+        localStorage.playersTurn = null;
+        document.getElementById("submit").value = "P L A Y    A G A I N";
+    }
 
-    this.setLeaderBoards = function() {
+    setLeaderBoards() {
         const oldGames = JSON.parse( localStorage.oldGames );
         if(oldGames != null) {
+
+            var leaderBoardDiv =  document.getElementById("boards");
+            while (leaderBoardDiv.firstChild) {
+                leaderBoardDiv.removeChild(leaderBoardDiv.lastChild);
+            }
+            
             for(var i = 0; i < oldGames.length; i++) {
                 var div = document.createElement("div");
                 var p = document.createElement("p");
                 p.innerHTML = oldGames[i][0] + " - " + oldGames[i][1];
                 div.appendChild(p);
-                document.getElementById("boards").appendChild(div);
+                leaderBoardDiv.appendChild(div);
             }
         }
     }
 }
+
+
+
+
+
 
 function startGame() {
     gameHandler.changeView(WINDOWS.GAME);
     window.onresize();
 };
 
+// GLOBAL VARIABLES
 var cells = null;
 var gameHandler = null;
+
 window.onload = function() {
     cells = [];
     
