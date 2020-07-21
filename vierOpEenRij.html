@@ -21,9 +21,9 @@
                 </h3>
                 <form action="#">
                     <label for="playerone">Player One  </label>
-                    <input type="text" id="playerone" name="playerone" value="Cat1"><br><br>
+                    <input type="text" maxlength="25" id="playerone" name="playerone" value="Cat1"><br><br>
                     <label for="playertwo">Player Two  </label>
-                    <input type="text" id="playertwo" name="playertwo" value="Cat2"><br><br>
+                    <input type="text" maxlength="25" id="playertwo" name="playertwo" value="Cat2"><br><br>
                     <input class="button" id="submit" onclick="return startGame();" type="button" value="P L A Y" disabled>
                 </form>
                 <br>
@@ -45,7 +45,7 @@
 
             <div id="leaderboards" class="invisible container menu">
                 <div class="table">
-                    <p class="onleft">Leaderboards</p>
+                    <p class="onleft clippedText">Leaderboards</p>
                     <input class="button onright" type="button" value="B A C K" onclick="gameHandler.changeView(WINDOWS.MENU)">
                 </div>
                 <div id="boards"></div>

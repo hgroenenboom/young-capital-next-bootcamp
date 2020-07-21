@@ -2,6 +2,10 @@
 const DIMENSIONS = [7, 6];
 const NUMCELLS = DIMENSIONS[0] * DIMENSIONS[1];
 
+function exists(valueToCheck) {
+    return !(typeof(valueToCheck) === 'undefined' || valueToCheck === "null" || valueToCheck === null || valueToCheck === undefined);
+}
+
 const SVGS = Object.freeze({
     CAT:0,
     STONE:1,
@@ -363,15 +367,7 @@ class VOERGameHandler {
         // add winscreen class
         document.getElementById("winscreen").classList.add("won");
 
-        if(localStorage.oldGames == null) {
-            var oldGames = [];
-        } else {
-            var oldGames = JSON.parse(localStorage.oldGames);
-        }
-        const game = [ document.getElementById("playerone").value , document.getElementById("playertwo").value ];
-        oldGames.push(game);
-        localStorage.oldGames = JSON.stringify(oldGames);
-        console.log(localStorage.oldGames);
+        this.saveCurrentWin();
 
         var that = this;
         setTimeout(function() {
@@ -379,6 +375,20 @@ class VOERGameHandler {
             document.getElementById("winscreen").classList.remove("won");
             that.reset();
         }, 1400);
+    }
+
+    saveCurrentWin() {
+        let oldGames;
+
+        if( !exists(localStorage.getItem('oldGames')) ) {
+            oldGames = [];
+        } else {
+            oldGames = JSON.parse(localStorage.oldGames);
+        }
+
+        const game = [ document.getElementById("playerone").value , document.getElementById("playertwo").value, this.player1Turn ];
+        oldGames.push(game);
+        localStorage.setItem('oldGames', JSON.stringify(oldGames));
     }
 
     setWhosTurnText = function() {
@@ -447,20 +457,39 @@ class VOERGameHandler {
     }
 
     setLeaderBoards() {
-        const oldGames = JSON.parse( localStorage.oldGames );
+        const oldGames = JSON.parse( localStorage.getItem("oldGames") );
         if(oldGames != null) {
 
-            var leaderBoardDiv =  document.getElementById("boards");
+            let leaderBoardDiv =  document.getElementById("boards");
             while (leaderBoardDiv.firstChild) {
                 leaderBoardDiv.removeChild(leaderBoardDiv.lastChild);
             }
             
+            let table = document.createElement("table");
+            let topRow = document.createElement("tr");
+            topRow.innerHTML = "<th><p>Winner</p></th><th><p>Loser</p></th><th></th>";
+            table.appendChild(topRow);
+            leaderBoardDiv.appendChild(topRow);
+
             for(var i = 0; i < oldGames.length; i++) {
-                var div = document.createElement("div");
-                var p = document.createElement("p");
-                p.innerHTML = oldGames[i][0] + " - " + oldGames[i][1];
-                div.appendChild(p);
-                leaderBoardDiv.appendChild(div);
+                let tr = document.createElement("tr");
+                
+                const currentGame = oldGames[i];
+                const playerWon = currentGame[2] ? 1 : 0;
+
+                for(var j = 0; j < 2; j++) {
+                    let td = document.createElement("td");
+                    let p = document.createElement("p");
+
+                    const playerName = currentGame[j];
+
+                    p.innerHTML = j === playerWon ? "<b>" + playerName + "</b>" : playerName;
+
+                    td.appendChild(p);
+                    tr.appendChild(td);
+                }
+
+                leaderBoardDiv.appendChild(tr);
             }
         }
     }
@@ -536,3 +565,7 @@ window.onresize = function() {
         }
     }
 };
+
+window.clearGameCache = function() {
+    gameHandler.clearCache();
+}

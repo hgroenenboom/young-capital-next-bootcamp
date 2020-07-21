@@ -1,25 +1,33 @@
 .button {
-    width: 50%;
+    width: auto;
     height: 50px;
-    margin: 10px;
+    padding: 10px;
 
-    font-size: 1.3vw;
+    font-size: 18px;
     background: linear-gradient(242deg, #b6afaffd, #adc5c16c, #a6aeb875, #73c78f3f);
     background-size: 800% 800%;
     -webkit-animation: Gradient 4.3s infinite linear;
     font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
 }
 
+input[type=text] {
+    width: 44%;
+    min-width: 200px;
+}
+
 .onleft {
     float: left;
     display: inline-block;
-    width: 20%;
+    width: auto;
+    max-width: 80%;
+    height: 15%;
 }
 
 .onright {
     float: right;
     display: inline-block;
     width: 20%;
+    height: 15%;
 }
 
 @-webkit-keyframes Gradient {
@@ -87,13 +95,13 @@ svg {
 }
 
 label {
-    font-size: 1.3vw;
+    font-size: 16px;
     font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     -webkit-text-fill-color: white;
 }
 
 h1 {
-    font-size: 5.3vw;
+    font-size: 45px;
     background: linear-gradient(242deg, #22b791, #2fffdc, #3d81e1, #79b6ae);
     background-size: 800% 800%;
     -webkit-background-clip: text;
@@ -118,6 +126,14 @@ p {
     font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     -webkit-text-fill-color: white;
     text-align: left;
+}
+
+.clippedText {
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    overflow: hidden;
+    max-height: 3.6em;
+    line-height: 1.8em;
 }
 
 .cell {
@@ -176,4 +192,29 @@ p {
 
 .table {
     display: flow-root;
+}
+
+table {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+  
+td, th {
+    border: 0.01px solid rgba(0, 0, 0, 0.5);
+    padding: 0px 15px;
+    border-radius: 4px;
+}
+  
+tr:nth-child(even)
+{
+    background-color: rgba(0, 0, 0, 0.1);
+}
+  
+tr:hover {
+    background-color: rgba(38, 195, 235, 0.3z);
+}
+  
+th {
+    padding: 0px 15px;
 }
