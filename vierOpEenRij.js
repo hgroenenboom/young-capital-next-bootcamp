@@ -157,7 +157,8 @@ function createSVGElement(svgID, fillColor = "black", strokeColor = "none") {
     return svg;
 }
 
-// function addToSVG()
+
+
 
 const CELLSTATE = Object.freeze({
     NONE:-1,
@@ -165,55 +166,63 @@ const CELLSTATE = Object.freeze({
     PLAYER2:2
 })
 
-function Cell (htmldiv, position) {
-    this.div = htmldiv;
-    this.position = position;
-    this.cellState = CELLSTATE.NONE;
-
-    var that = this;
-    this.onclick = null;
-    this.div.addEventListener("click", function(e) {
-        if(that.cellState == CELLSTATE.NONE) {
-            // call onclick callback
-            if(that.onclick != null) {
-                that.onclick(that.position);
+class Cell {
+    constructor(htmldiv, position) {
+        this.div = htmldiv;
+        this.position = position;
+        
+        this.cellState = CELLSTATE.NONE;
+        
+        // add mouselistener
+        var that = this;
+        this.onclick = null;
+        this.div.addEventListener("click", function(e) {
+            if(that.cellState == CELLSTATE.NONE) {
+                // call onclick callback
+                if(that.onclick != null) {
+                    that.onclick(that.position);
+                }
             }
-        }
-    });
+        });
+    }
+    
+    registerMouseClickedCallback(callbackToRegister) {
+        this.onclick = callbackToRegister;
+    }
 
-    this.log = function() {
-        console.log("element", this.div);
-        console.log("position: ", this.position);
-    };
-
-    this.hasDrawn = function() {
-        return this.cellState != CELLSTATE.NONE;
-    };
-
-    this.drawCoin = function(cellState, topPosition = 0) {
+    drawCoin(cellState, topPosition = 0) {
         this.cellState = cellState;
         const stoneColor = this.cellState > 0 ? "rgb(201, 36, 36)" : "rgb(54, 107, 227)"; 
-
+        
+        // generate and append new SVG
         var drawable = document.createElement("div");
         var drawableCoin = createSVGElement(SVGS.COIN, stoneColor);
-        // drawable.appendChild(drawableCoin);
-
+        
         drawableCoin.style.top = topPosition - this.div.offsetTop;
         setTimeout(function() {
             drawableCoin.style.top = "";
         }, 0.4);
-
+        
         this.div.appendChild( drawableCoin );
     };
-
-    this.reset = function() {
+    
+    reset() {
         this.cellState = CELLSTATE.NONE;
         
-        // remove drawn svgs
+        // if applyable remove drawn svg
         if(this.div.children.length > 0) {
             this.div.children[0].remove();
         }
     }
+    
+    get hasDrawn() {        return this.cellState != CELLSTATE.NONE; };
+    get offsetTop() {       return this.div.offsetTop; }
+    get offsetWidth() {     return this.div.offsetWidth; }
+
+    log() {
+        console.log("element", this.div);
+        console.log("position: ", this.position);
+    };
 }
 
 
@@ -232,9 +241,9 @@ function VOERGameHandler(cells, dimensions) {
     var that = this;
     for(var i = 0; i < this.dimensions[0]; i++) {
         for(var j = 0; j < this.dimensions[1]; j++) {
-            this.cells[i][j].onclick = function(pos) {
+            this.cells[i][j].registerMouseClickedCallback( function(pos) {
                 that.handleClickEvent(pos);
-            };
+            });
         }
     }
 
@@ -260,7 +269,7 @@ function VOERGameHandler(cells, dimensions) {
 
     this.dropStone = function(pos, playersTurn) {
         for(var i = this.dimensions[1]-1; i > -1 ; i--) {
-            if(!this.cells[pos[1]][i].hasDrawn()) {
+            if(!this.cells[pos[1]][i].hasDrawn) {
                 const stoneDroppedTopPosition = this.getCell(pos).div.offsetTop;
                 this.cells[pos[1]][i].drawCoin(playersTurn, stoneDroppedTopPosition);
 
@@ -418,7 +427,6 @@ function VOERGameHandler(cells, dimensions) {
                     const stateIndex = i*this.dimensions[1] + j;
                     const loadedState = states[ stateIndex ];
                     
-                    console.log("loaded state from cache for ", stateIndex, loadedState);
                     this.cells[i][j].cellState = loadedState;
                     if(loadedState != CELLSTATE.NONE) {
                         this.cells[i][j].drawCoin(loadedState, this.cells[i][j].offsetTop);
@@ -503,7 +511,7 @@ window.onload = function() {
 };
 
 window.onresize = function() {
-    const newW = cells[0][0].div.offsetWidth;
+    const newW = cells[0][0].offsetWidth;
 
     for(var i = 0; i < DIMENSIONS[0]; i++) {
         for(var j = 0; j < DIMENSIONS[1]; j++) {
