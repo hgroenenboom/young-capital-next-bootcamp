@@ -1,4 +1,4 @@
-# YoungCapital Traineeship
+# YoungCapital Traineeship with The Academy
+This repository contains weekly assignments from The Academy.
 
-### Vier op een Rij
-https://hgroenenboom.github.io/GitTest/index.html
+## Weekopdracht 1: Vier op een Rij
