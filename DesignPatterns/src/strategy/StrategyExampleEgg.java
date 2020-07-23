@@ -1,4 +1,4 @@
-package strategyPattern;
+package strategy;
 
 public class StrategyExampleEgg {
 	public static void main(String[] args) {

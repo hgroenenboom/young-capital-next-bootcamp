@@ -1,4 +1,4 @@
-package strategyPattern;
+package strategy;
 
 
 class Demo {
