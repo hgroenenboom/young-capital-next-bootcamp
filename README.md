@@ -1,4 +1,5 @@
 # YoungCapital Traineeship with The Academy
+
 This repository contains weekly assignments from The Academy.
 A lot of text is in dutch, due to the dutch nature of the lessons.
 
