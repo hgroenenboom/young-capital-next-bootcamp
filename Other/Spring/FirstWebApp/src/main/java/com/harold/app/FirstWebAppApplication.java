@@ -12,11 +12,11 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 //@EnableAutoConfiguration(exclude = JpaRepositoriesAutoConfiguration.class) // If JPARepositories are not yet created, otherwise autoconfigurator generates error.
-//@EnableScheduling // For scheduling test
-//@ComponentScan
+@EnableScheduling // For scheduling test
 public class FirstWebAppApplication {
 	
 	public static void main(String[] args) {
@@ -26,7 +26,6 @@ public class FirstWebAppApplication {
 
 }
 
-/*
 @RestController
 class testRest {
 	// maps localhost:$(PORT)/hello to below hello(...) function
@@ -35,4 +34,3 @@ class testRest {
 		return String.format("Hello %s!", name);
 	}
 }
-*/

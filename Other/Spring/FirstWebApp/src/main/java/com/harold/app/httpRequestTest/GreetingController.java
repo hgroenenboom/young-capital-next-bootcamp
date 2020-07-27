@@ -1,4 +1,4 @@
-package com.harold.app.tests.httpRequestTest;
+package com.harold.app.httpRequestTest;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/*
 @RestController
 public class GreetingController {
 	// Every resource requires a Resource controller defined by "@RestController"
@@ -20,4 +19,3 @@ public class GreetingController {
 		return new Greeting(counter.incrementAndGet(), String.format(template, name));
 	}
 }
-*/

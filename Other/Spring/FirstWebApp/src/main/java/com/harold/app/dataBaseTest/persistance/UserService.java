@@ -1,11 +1,11 @@
-package com.harold.app.tests.dataBaseTest.persistance;
+package com.harold.app.dataBaseTest.persistance;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.harold.app.tests.dataBaseTest.domain.UserEntity;
-import com.harold.app.tests.dataBaseTest.persistance.UserRepository;
+import com.harold.app.dataBaseTest.domain.UserEntity;
+import com.harold.app.dataBaseTest.persistance.UserRepository;
 
 
 @Service

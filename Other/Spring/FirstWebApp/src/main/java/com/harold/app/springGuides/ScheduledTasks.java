@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.harold.app.tests.springGuides;
+package com.harold.app.springGuides;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-/*
  
 @Component
 public class ScheduledTasks {
@@ -35,9 +34,8 @@ public class ScheduledTasks {
 
 	@Scheduled(fixedRate = 5000)
 	public void reportCurrentTime() {
-		System.out.println("scheduled task");
-		log.info("The time is now {}", dateFormat.format(new Date()));
+//		System.out.println("scheduled task");
+//		log.info("The time is now {}", dateFormat.format(new Date()));
 	}
 }
 
-*/
