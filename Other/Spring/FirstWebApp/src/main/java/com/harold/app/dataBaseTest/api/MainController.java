@@ -18,6 +18,15 @@ public class MainController {
   @Autowired // This means to get the bean called userRepository
   private UserRepository userRepository;
 
+  @GetMapping(path="/test")
+  public @ResponseBody UserEntity getUsers() {
+	    UserEntity n = new UserEntity();
+	    n.setName("Harold" + Integer.toString( (int)(100 * Math.random()) ));
+	    n.setEmail(Integer.toString( (int)(100 * Math.random()) ) + "@email.nl");
+	    userRepository.save(n);
+	    return n;
+  }
+  
   @PostMapping(path="/add") // Map ONLY POST Requests
   public @ResponseBody String addNewUser (@RequestParam String name
       , @RequestParam String email) {
