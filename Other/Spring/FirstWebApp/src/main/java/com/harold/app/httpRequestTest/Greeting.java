@@ -1,4 +1,4 @@
-package com.harold.FirstWebApp.restTest;
+package com.harold.app.httpRequestTest;
 
 public class Greeting {
 	// A JSON resource representation class
