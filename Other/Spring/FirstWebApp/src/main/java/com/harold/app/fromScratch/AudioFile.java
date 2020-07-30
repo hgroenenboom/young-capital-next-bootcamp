@@ -7,8 +7,16 @@ import java.util.Random;
 // Entity
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAmount;
+import java.time.temporal.TemporalUnit;
+
+import javax.persistence.Basic;
 
 // Repository (CRUD)
 import java.util.List;
@@ -23,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 
 
@@ -31,19 +40,53 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.harold.app.felix.domain.Trein;
+
 import org.springframework.stereotype.Controller;
 
 
+// Endpoint
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+
+import org.springframework.stereotype.Component;
+
 
 // Objects / data? -> Wordt automatisch een tabel : Model
+// Getters and Setters are needed in order for the data members to be accessed and registered as columns.
 @Entity
 public class AudioFile {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer id;
 
-	private String filepath = "placeholder"; // Adding a new collumn/field adds NULL values to the old entries
+	private String filepath = "placeholder"; // Adding a new column/field adds NULL values to the old entries
 
+	@Basic
+    private LocalDateTime addedDate;
+	
+	// ANNOTATIONS
+	// @OneToOne annotation -> Annotation OneToOne possessive relationship
+	// @JsonIgnore
+    
+    public LocalDateTime getAddedDate() {
+		return addedDate;
+	}
+
+	public void setAddedDate(LocalDateTime addedDate) {
+		this.addedDate = addedDate;
+	}
+
+	public AudioFile() {
+    	addedDate = LocalDateTime.now();
+    }
+	
 	public Integer getId() {
 		return id;
 	}
@@ -64,9 +107,9 @@ public class AudioFile {
 
 // Controller -> CRUD operations (automatisch). Eerste laag op DB
 @Repository
-interface AudioFileRepository extends CrudRepository<AudioFile, Integer> {	  // This is not a JPA repository, so it doesn't support automatic method names.
-//interface AudioFileRepository extends JpaRepository<AudioFile, Integer> {	 
-	
+//interface AudioFileRepository extends CrudRepository<AudioFile, Integer> {	  // This is not a JPA repository, so it doesn't support automatic method names.
+interface AudioFileRepository extends JpaRepository<AudioFile, Integer> {	 
+	List<AudioFile> findByAddedDateBefore(LocalDateTime time);
 }
 
 
@@ -101,6 +144,17 @@ class AudioFileService {
 	public Iterable<AudioFile> findAll() {
 		return repo.findAll();
 	}
+	
+	public @ResponseBody List<AudioFile> findAllBeforeNow() {
+		return repo.findByAddedDateBefore(LocalDateTime.now());
+	}
+	
+	public @ResponseBody List<AudioFile> findAllBeforeHoursAgo(long hours) throws Exception {
+		if(hours < 0 || hours > 10000)
+			throw new Exception();
+		
+		return repo.findByAddedDateBefore( LocalDateTime.now().minus(hours, ChronoUnit.HOURS) );
+	}
 }
 
 
@@ -133,6 +187,21 @@ class AudioFileController {
 	@GetMapping(path="/findAll")
 	public @ResponseBody Iterable<AudioFile> findAll() {
 		return service.findAll();
+	}
+	
+	@GetMapping(path="/findAllBeforeNow")
+	public @ResponseBody List<AudioFile> findAllBeforeNow() {
+		return service.findAllBeforeNow();
+	}
+	
+	@GetMapping(path="/findAllBefore1HourAgo")
+	public @ResponseBody List<AudioFile> findAllBefore1HourAgo() throws Exception {
+		return service.findAllBeforeHoursAgo(1L);
+	}
+	
+	@GetMapping(path="/findAllBeforeHoursAgo")
+	public @ResponseBody List<AudioFile> findAllBeforeHoursAgo(@RequestParam long hours) throws Exception {
+		return service.findAllBeforeHoursAgo(hours);
 	}
 	
 	// =============================================
@@ -185,4 +254,29 @@ class AudioFileController {
 		return files;
 	}
 }
+
+
+//========================================================================
+// ENDPOINT
+@Path("audiofiledata")
+@Component
+class AudioFileEndpoint {
+	@Autowired
+	private AudioFileService service;
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response allFiles() {
+		return Response.ok(service.findAll()).build();
+	}
+	
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response postAllFiles(AudioFile file){
+		AudioFile result = service.saveNew(file);
+		return Response.accepted(result.getId()).build();	
+	}
+}
+
 
