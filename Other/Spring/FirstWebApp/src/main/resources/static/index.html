@@ -1,7 +1,60 @@
 <html>
     <head>
+        <script type="text/javascript">
+            const HOST_ADRESS = "http://localhost:8083/"
+
+			function postData(apiCall, jsonObject){
+                var xhttp = new XMLHttpRequest();
+
+  				xhttp.onreadystatechange = function() {
+    				if (this.readyState == 4 && this.status == 202) {
+                        return this.responseText;
+    				}
+  				};
+ 
+                xhttp.open("POST", HOST_ADRESS + api, true);
+                xhttp.setRequestHeader("Content-type", "application/json"); 
+                console.log(xhttp);
+                xhttp.send(jsonObject);
+                console.log(xhttp); 
+			}
+
+			function getData(apiCall, lambda){
+                var xhttp = new XMLHttpRequest();
+
+                xhttp.open("GET", HOST_ADRESS + apiCall);
+                xhttp.setRequestHeader("Content-type", "application/json");
+
+  				xhttp.onreadystatechange = function() {
+                   if (this.readyState == 4) {
+      	    			console.log(this.responseText);
+                        lambda(this.responseText);
+    				}
+  				};
+
+                xhttp.send();
+			}
+        </script>
     </head>
     <body>
         <p>Homepage</p>
+        GET api tests <input type="text" value="set API call"></input>
+        <br>
+        <input id="getfield" type="text"></input>
+
+        POST api tests <input type="text" value="set API call"></input>
+        <br>
+        <input id="getfield" type="text"></input>
+    
+        <script>
+            const input = document.getElementsByTagName("input")[0];
+
+            input.addEventListener("keyup", function(event) { 
+                if (event.keyCode === 13) {
+                    event.preventDefault();
+                    getData(input.value, (t)=> { document.getElementById("getfield").value = t; });
+                }
+            });
+        </script>
     </body>
 </html>
