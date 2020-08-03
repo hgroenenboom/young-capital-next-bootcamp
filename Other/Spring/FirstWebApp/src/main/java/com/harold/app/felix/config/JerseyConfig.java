@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.harold.app.felix.api.TreinEndpoint;
 
+/*
 @Component
 @ApplicationPath("/api")
 public class JerseyConfig extends ResourceConfig {
@@ -14,3 +15,4 @@ public class JerseyConfig extends ResourceConfig {
 //		register(TreinEndpoint.class);
 	}
 }
+*/

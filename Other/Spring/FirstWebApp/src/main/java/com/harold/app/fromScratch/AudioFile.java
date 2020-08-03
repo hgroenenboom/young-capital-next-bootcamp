@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 
-
+import org.springframework.web.bind.annotation.CrossOrigin;
 // Controller
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -209,6 +209,7 @@ class AudioFileController {
 	// =============================================
 	
 	@GetMapping(path="/add") 
+	@CrossOrigin(origins = "http://localhost:8083")
 	public @ResponseBody AudioFile createAudioFile() {
 		AudioFile f = new AudioFile();
 		
@@ -256,6 +257,8 @@ class AudioFileController {
 }
 
 
+// UNUSED
+/*
 //========================================================================
 // ENDPOINT
 @Path("audiofiledata")
@@ -265,8 +268,9 @@ class AudioFileEndpoint {
 	private AudioFileService service;
 	
 	@GET
+	@CrossOrigin(origins = "http://localhost:8083")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response allFiles() {
+	public Response all_files() {
 		return Response.ok(service.findAll()).build();
 	}
 	
@@ -278,5 +282,6 @@ class AudioFileEndpoint {
 		return Response.accepted(result.getId()).build();	
 	}
 }
+*/
 
 
