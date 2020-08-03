@@ -1,4 +1,4 @@
-package com.harold.app.fromScratch;
+package com.harold.app.source.audioFileData;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -7,16 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
-import javax.ws.rs.Path;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.harold.app.fromScratch.AudioFile;
+import com.harold.app.source.audioFile.AudioFile;
 
 @Entity
 public class AudioFileData {
@@ -54,24 +46,4 @@ public class AudioFileData {
 		this.audiofile = audiofile;
 	}
 
-}
-
-@Repository
-interface AudioFileDataRepository extends JpaRepository<AudioFileData, Integer> {
-
-}
-
-class AudioFileDataService {
-	@Autowired
-	private AudioFileDataRepository repo;
-}
-
-@RequestMapping("audiofiledata")
-@RestController
-class AudioDataController {
-	@GetMapping(path="/test")
-	String log() {
-		System.out.println("test callable");
-		return "test";
-	}
 }

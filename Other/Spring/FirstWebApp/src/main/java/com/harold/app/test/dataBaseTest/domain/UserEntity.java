@@ -1,4 +1,4 @@
-package com.harold.app.dataBaseTest.domain;
+package com.harold.app.test.dataBaseTest.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

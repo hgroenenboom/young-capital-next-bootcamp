@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.harold.app.springGuides;
+package com.harold.app.test.springGuides;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
