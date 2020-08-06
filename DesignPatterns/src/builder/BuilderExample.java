@@ -20,6 +20,7 @@ class ApiRequest {
 class ApiRequestBuilder {
 	private String adress;
 	private StringBuilder arguments = new StringBuilder(); // Stringbuilder??
+	private int counter = 0;
 	
 	public ApiRequestBuilder setAdress(String adress) {
 		this.adress = adress;
@@ -27,7 +28,8 @@ class ApiRequestBuilder {
 	}
 	
 	public ApiRequestBuilder addArgument(String name, String parameter) {
-		arguments.append("?" + name + "=" + parameter);
+		arguments.append( (counter == 0 ? "?" : "&") + name + "=" + parameter);
+		counter++;
 		return this;
 	}
 	
