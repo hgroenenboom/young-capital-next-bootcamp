@@ -119,7 +119,6 @@ class Koken implements BereidWijze {
 
 class Bakken implements BereidWijze {
 	public Bakken() {
-		// TODO Auto-generated constructor stub
 	}	
 	
 	@Override
@@ -129,14 +128,12 @@ class Bakken implements BereidWijze {
 	
 	@Override
 	public String getBereidingsType() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }
 
 class Roerbakken implements BereidWijze {
 	public Roerbakken() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
@@ -146,7 +143,6 @@ class Roerbakken implements BereidWijze {
 	
 	@Override
 	public String getBereidingsType() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }
