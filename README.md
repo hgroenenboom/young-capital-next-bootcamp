@@ -7,6 +7,8 @@ While I usually don't code in Dutch, some code will be in Dutch due to the dutch
 A simple 4-on-a-row game using the native WebStack
 Play the game here: https://hgroenenboom.github.io/YoungCapitalNEXT-bootcamp
 
+![Four-On-A-Row Screenshot](./resources/four-on-a-row.png "Four-On-A-Row Screenshot")
+
 ### Features
 - Leaderboards
 - Local caching
