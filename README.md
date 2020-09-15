@@ -9,6 +9,12 @@ Play the game here: https://hgroenenboom.github.io/YoungCapitalNEXT-bootcamp
 
 ### Features
 - Leaderboards
+- Local caching
+- Cross-browser support
+- Nice animations
+- Fun cat-icon chips
+- Fun
+- Addictive
 
 ### What I learned
 - Caching using ```localStorage```
