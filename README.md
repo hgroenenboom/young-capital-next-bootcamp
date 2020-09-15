@@ -5,6 +5,7 @@ While I usually don't code in Dutch, some code will be in Dutch due to the dutch
 
 ## Assignment 1: Webstack Web-App 4-on-a-row game
 A simple 4-on-a-row game using the native WebStack
+Play the game here: https://hgroenenboom.github.io/YoungCapitalNEXT-bootcamp
 
 ### Features
 - Leaderboards
