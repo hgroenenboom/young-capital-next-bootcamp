@@ -1,13 +1,19 @@
 # YoungCapital Traineeship with The Academy
 
-This repository contains weekly assignments from The Academy.
-A lot of text is in dutch, due to the dutch nature of the lessons.
+This repository contains weekly assignments from TheAcademy.
+While I usually don't code in Dutch, some code will be in Dutch due to the dutch nature of the lessons.
 
-<!--
-## Weekopdracht 1: Web-App
-### A 'Vier op een Rij' browser game using JS, CSS & HTML: 
+## Assignment 1: Webstack Web-App 4-on-a-row game
+A simple 4-on-a-row game using the native WebStack
 
-## Weekopdracht 2: Java & OOP
-### A commandline 'kermis' management tool exploring Java and OOP
--->
+### Features
+- Leaderboards
+
+### What I learned
+- Caching using ```localStorage```
+- CSS animations using ```-webkit-animation``` and ```animation```
+- using OOP in ES6 javascript
+
+## Assignment 2: Java & OOP
+A commandline 'Fair finance' management tool for exploring Java and OOP
 
